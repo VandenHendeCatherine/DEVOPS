@@ -151,4 +151,76 @@ jobs:
         run: mvn clean verify --file ./backend/simple-api/pom.xml
 ```
 
-## 2-3
+## 2-3 QUALITY GATE CONFIGURATIONS
+```yml
+name: CI devops 2022 CPE
+on:
+  #to begin you want to launch this job in main and develop
+  push:
+    branches: [master]
+  pull_request:
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-18.04
+    steps:
+      #checkout your github code using actions/checkout@v2.3.3
+      - uses: actions/checkout@v2.3.3
+
+      #do the same with another action (actions/setup-java@v2) that enable to setup jdk 11
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      #finally build your app with the latest command
+      - name: Build and test with Maven
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=VandenHendeCatherine_DEVOPS -Dsonar.organization=vandenhendecatherine -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{secrets.SONAR_TOKEN }} --file ./backend/simple-api/pom.xml
+
+# define job to build and publish docker image
+  build-and-push-docker-image:
+    needs: test-backend
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+    # steps to perform in job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+        # Login to docker with github secrets
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build image and push backend
+        uses: docker/build-push-action@v2
+        with:
+      # relative path to the place where source code with Dockerfile is located
+          context: ./backend
+      # Note: tags has to be all lower-case
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/backend
+          push: ${{ github.ref == 'refs/heads/master' }}
+
+      - name: Build image and push database
+        uses: docker/build-push-action@v2
+        with:
+      # relative path to the place where source code with Dockerfile is located
+          context: ./database
+      # Note: tags has to be all lower-case
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/database
+          push: ${{ github.ref == 'refs/heads/master' }}
+
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v2
+        with:
+      # relative path to the place where source code with Dockerfile is located
+          context: ./http
+      # Note: tags has to be all lower-case
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd
+          push: ${{ github.ref == 'refs/heads/master' }}
+
+          
+          
+```
