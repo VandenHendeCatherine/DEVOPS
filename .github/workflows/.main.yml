@@ -16,5 +16,5 @@ jobs:
         with:
           java-version: '11'
       #finally build your app with the latest command
-      - maven: Build and test with Maven
+      - name: Build and test with Maven
         run: mvn clean verify --file ./backend/simple-api/pom.xml
