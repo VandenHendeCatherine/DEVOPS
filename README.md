@@ -123,4 +123,4 @@ Logs/Restart/Stop... :
 Les images que j'ai mises en ligne sont la base de données, l'api java et le serveur http.
 
 ## 2-1 TESTCONTAINERS
->Les testcontainers sont des library qui permettent de lancer plusieurs containers en les testant.
+>Les testcontainers sont des libraries qui permettent de lancer plusieurs containers en les testant.
