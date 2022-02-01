@@ -124,3 +124,29 @@ Les images que j'ai mises en ligne sont la base de données, l'api java et le se
 
 ## 2-1 TESTCONTAINERS
 >Les testcontainers sont des libraries qui permettent de lancer plusieurs containers en les testant.
+
+## 2-2 GITHUB ACTIONS
+
+```yml
+name: CI devops 2022 CPE
+on:
+  #to begin you want to launch this job in main and develop
+  push:
+    branches: [master]
+  pull_request:
+jobs:
+  test-backend:
+    runs-on: ubuntu-18.04
+    steps:
+      #checkout your github code using actions/checkout@v2.3.3
+      - uses: actions/checkout@v2.3.3
+      #do the same with another action (actions/setup-java@v2) that enable to setup jdk 11
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      #finally build your app with the latest command
+      - name: Build and test with Maven
+        run: mvn clean verify --file ./backend/simple-api/pom.xml
+```
