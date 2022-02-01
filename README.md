@@ -38,7 +38,7 @@ ENV POSTGRES_DB=db
 
 ## 1-2 BACKEND API
 
->Nous avons besoin d'un build en plusieurs étapes car on doit d'abord builder le package maven puis l'executer.
+>Nous avons besoin d'un build en plusieurs étapes car on doit d'abord builder le package maven avec des jdk (lourds) puis de l'executer avec des jre (plus légers).
 
 Dockerfile :
 ```dockerfile
