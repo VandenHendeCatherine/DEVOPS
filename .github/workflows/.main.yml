@@ -21,10 +21,10 @@ jobs:
         run: mvn clean verify --file ./backend/simple-api/pom.xml
    # define job to build and publish docker image
   build-and-push-docker-image:
-  needs: test-backend
-  # run only when code is compiling and tests are passing
-  runs-on: ubuntu-latest
-  # steps to perform in job
+    needs: test-backend
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+    # steps to perform in job
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -32,22 +32,22 @@ jobs:
         uses: docker/build-push-action@v2
         with:
       # relative path to the place where source code with Dockerfile is located
-        context: ./backend
+          context: ./backend
       # Note: tags has to be all lower-case
-        tags: ${{secrets.DOCKERHUB_USERNAME}}/backend
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/backend
       - name: Build image and push database
       # DO the same for database
         uses: docker/build-push-action@v2
         with:
       # relative path to the place where source code with Dockerfile is located
-        context: ./database
+          context: ./database
       # Note: tags has to be all lower-case
-        tags: ${{secrets.DOCKERHUB_USERNAME}}/database
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/database
       - name: Build image and push httpd
       # DO the same for httpd
         uses: docker/build-push-action@v2
         with:
       # relative path to the place where source code with Dockerfile is located
-        context: ./httpd
+          context: ./httpd
       # Note: tags has to be all lower-case
-        tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd
