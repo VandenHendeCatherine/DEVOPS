@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+  backend:
+    build: ./backend
+    networks:
+    - my-network
+    depends_on: 
+    - database
+
+  database:
+    build: ./database
+    networks:
+    - my-network
+
+  httpd:
+    build: ./http
+    ports: 
+    - "80:80"
+    networks:
+    - my-network
+    depends_on: 
+    - backend
+
+
+networks:
+  my-network:

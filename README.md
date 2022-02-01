@@ -68,3 +68,59 @@ ENTRYPOINT java -jar myapp.jar
 
 ### Attention a l'environnement 
 >mvn dependency:go-offline 
+
+## 1-3 DOCKER-COMPOSE COMMANDS
+
+Build : 
+>docker-compose build
+
+Run :
+>docker-compose up
+
+## 1-4 DOCKER-COMPOSE FILE
+
+```yml
+version: '3.3'
+
+services:
+  backend:
+    build: ./backend
+    networks:
+    - my-network
+    depends_on: 
+    - database
+
+  database:
+    build: ./database
+    networks:
+    - my-network
+
+  httpd:
+    build: ./http
+    ports: 
+    - "80:80"
+    networks:
+    - my-network
+    depends_on: 
+    - backend
+
+
+networks:
+  my-network:
+```
+
+## 1-5 PUBLISH
+
+Créer un tag pour une image : 
+>docker tag devops_database cathvdh/devops_database:1.0
+
+Push une image sur Docker Hub :
+>docker push cathvdh/devops_database
+
+Logs/Restart/Stop... :
+>docker-compose cmd service
+
+Les images que j'ai mises en ligne sont la base de données, l'api java et le serveur http.
+
+## 2-1 TESTCONTAINERS
+>Les testcontainers sont des library qui permettent de lancer plusieurs containers en les testant.
