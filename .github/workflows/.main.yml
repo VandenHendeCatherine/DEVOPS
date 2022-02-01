@@ -19,7 +19,6 @@ jobs:
       #finally build your app with the latest command
       - name: Build and test with Maven
         run: mvn clean verify --file ./backend/simple-api/pom.xml
-jobs:
    # define job to build and publish docker image
   build-and-push-docker-image:
   needs: test-backend
@@ -27,10 +26,8 @@ jobs:
   runs-on: ubuntu-latest
   # steps to perform in job
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Build image and push backend
         uses: docker/build-push-action@v2
         with:
@@ -38,7 +35,6 @@ jobs:
         context: ./backend
       # Note: tags has to be all lower-case
         tags: ${{secrets.DOCKERHUB_USERNAME}}/backend
-
       - name: Build image and push database
       # DO the same for database
         uses: docker/build-push-action@v2
@@ -47,7 +43,6 @@ jobs:
         context: ./database
       # Note: tags has to be all lower-case
         tags: ${{secrets.DOCKERHUB_USERNAME}}/database
-
       - name: Build image and push httpd
       # DO the same for httpd
         uses: docker/build-push-action@v2
