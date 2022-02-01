@@ -68,3 +68,43 @@ ENTRYPOINT java -jar myapp.jar
 
 ### Attention a l'environnement 
 >mvn dependency:go-offline 
+
+## 1-3 DOCKER-COMPOSE COMMANDS
+
+Build : 
+>docker-compose build
+
+Run :
+>docker-compose up
+
+## 1-4 DOCKER-COMPOSE FILE
+
+```yaml
+version: '3.3'
+
+services:
+  backend:
+    build: ./backend
+    networks:
+    - my-network
+    depends_on: 
+    - database
+
+  database:
+    build: ./database
+    networks:
+    - my-network
+
+  httpd:
+    build: ./http
+    ports: 
+    - "80:80"
+    networks:
+    - my-network
+    depends_on: 
+    - backend
+
+
+networks:
+  my-network:
+```
