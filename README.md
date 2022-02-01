@@ -79,7 +79,7 @@ Run :
 
 ## 1-4 DOCKER-COMPOSE FILE
 
-```yaml
+```yml
 version: '3.3'
 
 services:
@@ -108,3 +108,16 @@ services:
 networks:
   my-network:
 ```
+
+## 1-5 PUBLISH
+
+Créer un tag pour une image : 
+>docker tag devops_database cathvdh/devops_database:1.0
+
+Push une image sur Docker Hub :
+>docker push cathvdh/devops_database
+
+Logs/Restart/Stop... :
+>docker-compose cmd service
+
+Les images que j'ai mises en ligne sont la base de données, l'api java et le serveur http.
