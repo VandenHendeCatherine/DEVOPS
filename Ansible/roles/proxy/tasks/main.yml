@@ -3,7 +3,7 @@
 - name: Create a proxy container
   docker_container:
     name: httpd
-    image: cathvdh/httpd
+    image: cathvdh/httpd:latest
     ports: 
     - "80:80"
     networks: 
