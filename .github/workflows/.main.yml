@@ -60,7 +60,7 @@ jobs:
           tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd
           push: ${{ github.ref == 'refs/heads/master' }}
       - name: Build image and push front
-      # DO the same for httpd
+      # DO the same for front
         uses: docker/build-push-action@v2
         with:
       # relative path to the place where source code with Dockerfile is located
