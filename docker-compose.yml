@@ -19,17 +19,16 @@ services:
     - "80:80"
     networks:
     - my-network
-    - my_network2
     depends_on: 
     - backend
+    - front
   
   front:
     build: ./front
     networks:
-    - my_network2
-    depends_on: 
-    - httpd
+    - my-network
+    depends_on :
+    - backend
 
 networks:
   my-network:
-  my_network2:
