@@ -219,8 +219,145 @@ jobs:
           context: ./http
       # Note: tags has to be all lower-case
           tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd
-          push: ${{ github.ref == 'refs/heads/master' }}
+          push: ${{ github.ref == 'refs/heads/master' }}    
+```
 
-          
-          
+## 3-1 ANSIBLE COMMANDS
+
+inventory.yml :
+```yml
+all:
+  vars:
+    ansible_user: centos
+    ansible_ssh_private_key_file: Ansible/id_rsa
+  children:
+    prod:
+    hosts: centos@catherine.vanden-hende.takima.cloud
+```
+Version Ansible :
+>ansible --version
+
+Connection ssh :
+>ssh -i Ansible/id_rsa centos@catherine.vanden-hende.takima.cloud
+
+Ping :
+>ansible all -m ping -i inventory.yml
+
+Installation Apache :
+>ansible all -m yum -a “name=httpd state=present” -i inventory.yml --become
+
+Création page html :
+>ansible all -m shell -a 'echo `<html><h1>Hello CPE</h1></html>` >>
+/var/www/html/index.html' -i inventory.yml
+--become
+
+Démarrer Apache :
+>ansible all -m service -a "name=httpd state=started"
+-i inventory.yml --become
+
+Afficher la distribution OS : 
+>$ ansible all -i inventory.yml -m setup -a
+"filter=ansible_distribution*"
+
+Desinstaller Apache :
+>ansible all -i inventories/setup.yml -m yum -a "name=httpd state=absent"
+--become
+
+## 2-3 PLAYBOOK
+
+Initialisaion des roles :
+>ansible-galaxy init roles/docker
+
+Lancer un playbook :
+>ansible-playbook -i inventory.yml playbook.yml
+
+Playbook :
+```yml
+- hosts: all
+  gather_facts: false
+  become: true
+
+  roles: 
+  - docker
+```
+
+Docker main.yml :
+```yml
+ # Install Docker
+    - name: Clean packages
+      command:
+        cmd: dnf clean -y packages
+    - name: Install device-mapper-persistent-data
+      dnf:
+        name: device-mapper-persistent-data
+        state: latest
+    - name: Install lvm2
+      dnf:
+        name: lvm2
+        state: latest
+    - name: add repo docker
+      command:
+        cmd: sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    - name: Install Docker
+      dnf:
+        name: docker-ce
+        state: present
+    - name: install python3
+      dnf:
+        name: python3
+    - name: Pip install
+      pip:
+        name: docker
+    - name: Make sure Docker is running
+      service: name=docker state=started
+      tags: docker
+```
+
+## 3-3 Deployement
+```yml
+#playout.yml
+- hosts: all
+  gather_facts: false
+  become: true
+
+  roles: 
+  - docker
+  - network
+  - database
+  - app
+  - proxy
+
+# tasks file for roles/docker : 0 changes
+# tasks file for roles/network
+- name: Create a network
+  docker_network:
+    name: my-network
+
+# tasks file for roles/database
+- name: Create a data container
+  docker_container:
+    name: database
+    image: cathvdh/database
+    volumes:
+      - /data
+    networks: 
+      - name: my-network
+
+# tasks file for roles/app
+- name: Create a app container
+  docker_container:
+    name: backend
+    image: cathvdh/backend
+    networks: 
+      - name: my-network
+
+# tasks file for roles/proxy
+- name: Create a proxy container
+  docker_container:
+    name: httpd
+    image: cathvdh/httpd
+    ports: 
+    - "80:80"
+    networks: 
+      - name: my-network
 ```

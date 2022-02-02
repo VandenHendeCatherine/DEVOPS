@@ -1,0 +1,10 @@
+---
+# tasks file for roles/proxy
+- name: Create a proxy container
+  docker_container:
+    name: httpd
+    image: cathvdh/httpd
+    ports: 
+    - "80:80"
+    networks: 
+      - name: my-network
