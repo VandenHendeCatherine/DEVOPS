@@ -1,0 +1,8 @@
+---
+# tasks file for roles/front
+- name: Create a front container
+  docker_container:
+    name: front
+    image: cathvdh/front
+    networks: 
+      - name: my-network
