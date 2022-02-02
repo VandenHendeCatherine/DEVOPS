@@ -21,7 +21,14 @@ services:
     - my-network
     depends_on: 
     - backend
-
+    - front
+  
+  front:
+    build: ./front
+    networks:
+    - my-network
+    depends_on :
+    - backend
 
 networks:
   my-network:

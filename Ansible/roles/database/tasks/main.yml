@@ -1,0 +1,10 @@
+---
+# tasks file for roles/database
+- name: Create a data container
+  docker_container:
+    name: database
+    image: cathvdh/database
+    volumes:
+      - /data
+    networks: 
+      - name: my-network

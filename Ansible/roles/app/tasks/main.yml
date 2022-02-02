@@ -1,0 +1,8 @@
+---
+# tasks file for roles/app
+- name: Create a app container
+  docker_container:
+    name: backend
+    image: cathvdh/backend
+    networks: 
+      - name: my-network
